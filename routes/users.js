@@ -24,4 +24,50 @@ router.post("/", async (req, res) => {
 	}
 });
 
+router.get("/details", async (req, res) =>  {
+	try {
+	  const data = await User.find();
+	  res.status(201).json(data);
+	} catch (error) {
+	  console.log(error.message);
+	}
+  })
+
+  router.get("/details/:id", async (req, res) =>  {
+	try {
+	  const data = await User.findOne({ _id: req.params.id });
+	  res.status(201).json(data);
+	} catch (error) {
+	  console.log(error.message);
+	}
+  })
+  
+  router.put("/details/:id", async (req, res) =>  {
+	const { errors, isValid } = ValidateUser(req.body);
+	try {
+	  if (!isValid) {
+		res.status(404).json(errors);
+	  } else {
+		const data = await User.findOneAndUpdate(
+		  { _id: req.params.id },
+		  req.body,
+		  { new: true }
+		);
+		res.status(201).json(data);
+	  }
+	} catch (error) {
+	  console.log(error.message);
+	}
+  })
+  
+  router.delete("/details/:id", async (req, res) =>  {
+	try {
+	  await User.deleteOne({ _id: req.params.id });
+	  res.status(201).json({ message: "User deleted with success" });
+	} catch (error) {
+	  console.log(error.message);
+	}
+  })
+  
+
 module.exports = router;
